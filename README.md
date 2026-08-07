@@ -12,10 +12,11 @@ GitHub Pages에 무료로 호스팅하고 lbclab.hanyang.ac.kr 도메인을 연�
 | 저장할 파일명 | 원본 (Wix 사이트 위치) |
 |---|---|
 | yunju-nam.jpg | About Us — PI 프로필 사진 |
-| member-gun-kim.jpg | About Us — Gun Kim |
 | member-sumin-cho.jpg | About Us — Sumin Cho |
 | member-gaun-im.jpg | About Us — Gaun Im |
-| member-hyunjeong-lim.jpg | About Us — Hyunjeong Lim |
+| member-jaewon-choi.jpg | About Us — Jaewon Choi |
+| member-eunjin-chang.jpg | About Us — Eun Jin Chang |
+| member-ami-gong.jpg | About Us — Ami Gong |
 | poster-2023-hsp.jpg | Conferences — 2023 HSP 포스터 |
 | poster-2019-cogsci.jpg | Conferences — 2019 Cognitive Science 포스터 |
 | poster-2019-ecem.jpg | Conferences — 2019 ECEM 포스터 |

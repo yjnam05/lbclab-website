@@ -34,13 +34,78 @@
     language, using EEG/ERP and eye-movement tracking to observe cognition as it unfolds
     in real time.</p>
 
-    <!-- Signature: ERP trace (negative-up convention, N400 & P600 marked) -->
-    <svg class="erp-wave" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true">
-      <path class="baseline" d="M0,55 L1000,55"/>
-      <path d="M0,55 L120,54 L180,58 L260,50 L330,56 L400,30 L460,62 L540,26 L620,58 L700,74 L780,52 L860,57 L1000,55"/>
-      <text x="530" y="16">N400</text>
-      <text x="690" y="94">P600</text>
+    <!-- Signature: eye-tracking scanpath over a real German sentence -->
+    <svg class="gaze-plot" viewBox="0 0 780 150" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <text class="sentence" x="40" y="70" font-size="23">
+        <tspan id="w-sprache">Sprache</tspan> <tspan id="w-ist">ist</tspan> <tspan id="w-ein">ein</tspan> <tspan id="w-fenster">Fenster</tspan> <tspan id="w-zu">zu</tspan> <tspan id="w-unserem">unserem</tspan> <tspan id="w-geist">Geist</tspan> <tspan id="w-und">und</tspan> <tspan id="w-gehirn">Gehirn.</tspan>
+      </text>
+      <text class="gloss" x="40" y="102">"Language is a window to our mind and brain."</text>
+
+      <path id="gaze-saccade" class="saccade" d="" style="animation-delay:0.1s"/>
+
+      <circle id="fix1" class="fixation" cx="0" cy="0" r="0" style="animation-delay:0.15s"/>
+      <circle id="fix1-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix1-num" class="fixation-num" text-anchor="middle" x="0" y="0">1</text>
+
+      <circle id="fix2" class="fixation" cx="0" cy="0" r="0" style="animation-delay:0.55s"/>
+      <circle id="fix2-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix2-num" class="fixation-num" text-anchor="middle" x="0" y="0">2</text>
+
+      <circle id="fix3" class="fixation" cx="0" cy="0" r="0" style="animation-delay:0.95s"/>
+      <circle id="fix3-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix3-num" class="fixation-num" text-anchor="middle" x="0" y="0">3</text>
+
+      <circle id="fix4" class="fixation" cx="0" cy="0" r="0" style="animation-delay:1.35s"/>
+      <circle id="fix4-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix4-num" class="fixation-num" text-anchor="middle" x="0" y="0">4</text>
+
+      <circle id="fix5" class="fixation" cx="0" cy="0" r="0" style="animation-delay:1.75s"/>
+      <circle id="fix5-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix5-num" class="fixation-num" text-anchor="middle" x="0" y="0">5</text>
+
+      <circle id="fix6" class="fixation" cx="0" cy="0" r="0" style="animation-delay:2.1s"/>
+      <circle id="fix6-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix6-num" class="fixation-num" text-anchor="middle" x="0" y="0">6</text>
     </svg>
+    <script>
+    (function () {
+      function place() {
+        var words = { sprache: 'w-sprache', fenster: 'w-fenster', unserem: 'w-unserem', geist: 'w-geist', gehirn: 'w-gehirn' };
+        var centers = {};
+        for (var key in words) {
+          var t = document.getElementById(words[key]);
+          if (!t || typeof t.getBBox !== 'function') return;
+          var b = t.getBBox();
+          centers[key] = { x: b.x + b.width / 2, y: b.y + b.height * 0.55 };
+        }
+        var seq = [
+          { id: 'fix1', word: 'sprache', r: 11, above: true },
+          { id: 'fix2', word: 'fenster', r: 9,  above: true },
+          { id: 'fix3', word: 'unserem', r: 10, above: true },
+          { id: 'fix4', word: 'geist',   r: 8,  above: true },
+          { id: 'fix5', word: 'fenster', r: 6,  above: false },
+          { id: 'fix6', word: 'gehirn',  r: 12, above: true }
+        ];
+        var pts = [];
+        seq.forEach(function (f) {
+          var c = centers[f.word];
+          if (!c) return;
+          pts.push(c.x + ',' + c.y);
+          var circle = document.getElementById(f.id);
+          var dot = document.getElementById(f.id + '-dot');
+          var num = document.getElementById(f.id + '-num');
+          circle.setAttribute('cx', c.x); circle.setAttribute('cy', c.y); circle.setAttribute('r', f.r);
+          dot.setAttribute('cx', c.x); dot.setAttribute('cy', c.y);
+          num.setAttribute('x', c.x);
+          num.setAttribute('y', f.above ? (c.y - f.r - 8) : (c.y + f.r + 14));
+        });
+        var path = document.getElementById('gaze-saccade');
+        if (path && pts.length) path.setAttribute('d', 'M' + pts.join(' L'));
+      }
+      if (document.readyState === 'complete') place();
+      else window.addEventListener('load', place);
+    })();
+    </script>
   </section>
 
   <section class="block">
@@ -90,11 +155,6 @@
     <h2 class="section">Members</h2>
     <div class="members">
       <div class="member">
-        <img src="images/member-gun-kim.jpg" alt="Gun Kim">
-        <div class="name">Gun Kim</div>
-        <div class="deg">M.A.</div>
-      </div>
-      <div class="member">
         <img src="images/member-sumin-cho.jpg" alt="Sumin Cho">
         <div class="name">Sumin Cho</div>
         <div class="deg">M.A.</div>
@@ -105,8 +165,18 @@
         <div class="deg">M.A.</div>
       </div>
       <div class="member">
-        <img src="images/member-hyunjeong-lim.jpg" alt="Hyunjeong Lim">
-        <div class="name">Hyunjeong Lim</div>
+        <img src="images/member-jaewon-choi.jpg" alt="Jaewon Choi">
+        <div class="name">Jaewon Choi</div>
+        <div class="deg">M.A.</div>
+      </div>
+      <div class="member">
+        <img src="images/member-eunjin-chang.jpg" alt="Eun Jin Chang">
+        <div class="name">Eun Jin Chang</div>
+        <div class="deg">M.A.</div>
+      </div>
+      <div class="member">
+        <img src="images/member-ami-gong.jpg" alt="Ami Gong">
+        <div class="name">Ami Gong</div>
         <div class="deg">Intern</div>
       </div>
     </div>

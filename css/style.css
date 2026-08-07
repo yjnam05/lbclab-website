@@ -110,35 +110,40 @@ nav.main a[aria-current="page"] {
   font-size: 1.08rem;
 }
 
-/* ERP waveform signature — glowing trace */
-.erp-wave { display: block; width: 100%; height: 96px; margin: 14px 0 0; }
-.erp-wave path {
+/* Eye-tracking scanpath (hero signature) — glowing dark-theme version */
+.gaze-plot { display: block; width: 100%; max-width: 760px; height: 150px; margin: 34px 0 0; }
+.gaze-plot .sentence { font-family: "Instrument Serif", "Gowun Batang", serif; font-weight: 400; fill: var(--text); }
+.gaze-plot .gloss { font-family: "Figtree", sans-serif; font-style: italic; fill: var(--soft); font-size: 13px; }
+.gaze-plot .saccade {
   fill: none;
   stroke: var(--accent);
-  stroke-width: 2;
+  stroke-width: 1.8;
   stroke-linecap: round;
-  stroke-dasharray: 2400;
-  stroke-dashoffset: 2400;
-  filter: drop-shadow(0 0 6px rgba(111, 214, 255, 0.55));
-  animation: trace 3.4s ease-out forwards;
+  opacity: 0.85;
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  filter: drop-shadow(0 0 5px rgba(111, 214, 255, 0.55));
+  animation: gaze-trace 2.4s ease-out forwards;
 }
-.erp-wave .baseline {
-  stroke: var(--line);
-  stroke-width: 1;
-  stroke-dasharray: none;
-  animation: none;
-  stroke-dashoffset: 0;
-  filter: none;
+.gaze-plot .fixation {
+  fill: rgba(111, 214, 255, 0.14);
+  stroke: var(--accent);
+  stroke-width: 1.3;
+  opacity: 0;
+  animation: fixation-in 0.4s ease-out forwards;
 }
-.erp-wave text {
+.gaze-plot .fixation-dot { fill: var(--gold); }
+.gaze-plot .fixation-num {
   font-family: "Figtree", sans-serif;
   font-size: 10px;
-  letter-spacing: 0.08em;
-  fill: var(--soft);
+  font-weight: 600;
+  fill: var(--gold);
 }
-@keyframes trace { to { stroke-dashoffset: 0; } }
+@keyframes gaze-trace { to { stroke-dashoffset: 0; } }
+@keyframes fixation-in { to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
-  .erp-wave path { animation: none; stroke-dashoffset: 0; }
+  .gaze-plot .saccade { animation: none; stroke-dashoffset: 0; }
+  .gaze-plot .fixation { animation: none; opacity: 1; }
   html { scroll-behavior: auto; }
 }
 
