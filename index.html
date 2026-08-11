@@ -220,5 +220,28 @@
   </div>
 </footer>
 
+<script>
+(function () {
+  document.querySelectorAll('.member-email').forEach(function (link) {
+    var tip = document.createElement('span');
+    tip.className = 'copy-tip';
+    tip.textContent = '복사됨';
+    link.appendChild(tip);
+
+    link.addEventListener('click', function () {
+      // mailto: navigation proceeds normally — this just also copies the address
+      var email = link.getAttribute('href').replace('mailto:', '');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).catch(function () {});
+      }
+      link.classList.add('copied');
+      clearTimeout(link._copyTimer);
+      link._copyTimer = setTimeout(function () {
+        link.classList.remove('copied');
+      }, 1400);
+    });
+  });
+})();
+</script>
 </body>
 </html>
