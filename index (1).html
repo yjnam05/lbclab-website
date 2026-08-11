@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LBC Lab | Language, Brain &amp; Cognition Laboratory — Hanyang University</title>
+<meta name="description" content="LBC Lab (Language, Brain and Cognition) at Hanyang University — psycholinguistics, cognitive science, EEG, eye-tracking.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="site-inner">
+    <a class="brand" href="index.html"><b>L</b>anguage, <b>B</b>rain &amp; <b>C</b>ognition Lab</a>
+    <nav class="main" aria-label="Main">
+      <a href="index.html" aria-current="page">About Us</a>
+      <a href="publications.html">Publications</a>
+      <a href="conferences.html">Conferences</a>
+      <a href="projects.html">Projects</a>
+      <a href="events.html">Events</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <p class="eyebrow">Hanyang University · Seoul</p>
+    <h1>Language is a window <br>showing our <em>mind</em> &amp; <em>brain</em></h1>
+    <p class="lede">The LBC Lab investigates how the human brain comprehends and produces
+    language, using EEG/ERP and eye-movement tracking to observe cognition as it unfolds
+    in real time.</p>
+
+    <!-- Signature: eye-tracking scanpath over a real German sentence -->
+    <svg class="gaze-plot" viewBox="0 0 780 150" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <text class="sentence" x="390" y="70" font-size="23" text-anchor="middle">
+        <tspan id="w-sprache">Sprache</tspan> <tspan id="w-ist">ist</tspan> <tspan id="w-ein">ein</tspan> <tspan id="w-fenster">Fenster</tspan> <tspan id="w-zu">zu</tspan> <tspan id="w-unserem">unserem</tspan> <tspan id="w-geist">Geist</tspan> <tspan id="w-und">und</tspan> <tspan id="w-gehirn">Gehirn.</tspan>
+      </text>
+      <text class="gloss" x="390" y="102" text-anchor="middle">"Language is a window to our mind and brain."</text>
+
+      <path id="gaze-saccade" class="saccade" d="" style="animation-delay:0.1s"/>
+
+      <circle id="fix1" class="fixation" cx="0" cy="0" r="0" style="animation-delay:0.15s"/>
+      <circle id="fix1-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix1-num" class="fixation-num" text-anchor="middle" x="0" y="0">1</text>
+
+      <circle id="fix2" class="fixation" cx="0" cy="0" r="0" style="animation-delay:0.55s"/>
+      <circle id="fix2-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix2-num" class="fixation-num" text-anchor="middle" x="0" y="0">2</text>
+
+      <circle id="fix3" class="fixation" cx="0" cy="0" r="0" style="animation-delay:0.95s"/>
+      <circle id="fix3-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix3-num" class="fixation-num" text-anchor="middle" x="0" y="0">3</text>
+
+      <circle id="fix4" class="fixation" cx="0" cy="0" r="0" style="animation-delay:1.35s"/>
+      <circle id="fix4-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix4-num" class="fixation-num" text-anchor="middle" x="0" y="0">4</text>
+
+      <circle id="fix5" class="fixation" cx="0" cy="0" r="0" style="animation-delay:1.75s"/>
+      <circle id="fix5-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix5-num" class="fixation-num" text-anchor="middle" x="0" y="0">5</text>
+
+      <circle id="fix6" class="fixation" cx="0" cy="0" r="0" style="animation-delay:2.1s"/>
+      <circle id="fix6-dot" class="fixation-dot" cx="0" cy="0" r="1.6"/>
+      <text id="fix6-num" class="fixation-num" text-anchor="middle" x="0" y="0">6</text>
+    </svg>
+    <script>
+    (function () {
+      function place() {
+        var words = { sprache: 'w-sprache', fenster: 'w-fenster', unserem: 'w-unserem', geist: 'w-geist', gehirn: 'w-gehirn' };
+        var centers = {};
+        for (var key in words) {
+          var t = document.getElementById(words[key]);
+          if (!t || typeof t.getBBox !== 'function') return;
+          var b = t.getBBox();
+          centers[key] = { x: b.x + b.width / 2, y: b.y + b.height * 0.55 };
+        }
+        var seq = [
+          { id: 'fix1', word: 'sprache', r: 11, above: true },
+          { id: 'fix2', word: 'fenster', r: 9,  above: true },
+          { id: 'fix3', word: 'unserem', r: 10, above: true },
+          { id: 'fix4', word: 'geist',   r: 8,  above: true },
+          { id: 'fix5', word: 'fenster', r: 6,  above: false },
+          { id: 'fix6', word: 'gehirn',  r: 12, above: true }
+        ];
+        var pts = [];
+        seq.forEach(function (f) {
+          var c = centers[f.word];
+          if (!c) return;
+          pts.push(c.x + ',' + c.y);
+          var circle = document.getElementById(f.id);
+          var dot = document.getElementById(f.id + '-dot');
+          var num = document.getElementById(f.id + '-num');
+          circle.setAttribute('cx', c.x); circle.setAttribute('cy', c.y); circle.setAttribute('r', f.r);
+          dot.setAttribute('cx', c.x); dot.setAttribute('cy', c.y);
+          num.setAttribute('x', c.x);
+          num.setAttribute('y', f.above ? (c.y - f.r - 8) : (c.y + f.r + 14));
+        });
+        var path = document.getElementById('gaze-saccade');
+        if (path && pts.length) path.setAttribute('d', 'M' + pts.join(' L'));
+      }
+      if (document.readyState === 'complete') place();
+      else window.addEventListener('load', place);
+    })();
+    </script>
+  </section>
+
+  <section class="block">
+    <h2 class="section">Research Areas</h2>
+    <p class="section-note">Our work on psycholinguistics relates to these primary areas:</p>
+    <div class="tags">
+      <span>Language comprehension &amp; production</span>
+      <span>Second language acquisition</span>
+      <span>Neural correlates of the brain</span>
+      <span>Consumer neuroscience</span>
+      <span>EEG (Electroencephalography)</span>
+      <span>Eye-movement tracking</span>
+    </div>
+  </section>
+
+  <section class="block" id="pi">
+    <h2 class="section">Principal Investigator</h2>
+    <div class="pi">
+      <img src="images/yunju-nam.jpg" alt="Prof. Yunju Nam">
+      <div>
+        <h3>Yunju Nam</h3>
+        <p class="role">Associate Professor, Hanyang University<br>
+        Dept. of German Language and Literature ·
+        Dept. of Cognitive Science, School of Data Science (Joint Appointment)</p>
+        <p>Yunju Nam graduated from Seoul National University with double majors in
+        German Language &amp; Literature and Economics. She worked as a research professor
+        at Konkuk University, funded by the National Research Foundation of Korea, and
+        from 2018 served as an assistant professor (KU research professor) at Konkuk
+        University, contributing to the Brain Cognition Research Center as a Vice
+        Investigator.</p>
+        <p>She is actively involved in several academic societies, including the
+        Linguistic Society of Korea (LSK), the Applied Linguistics Association of Korea
+        (ALAK), the Korean Society for Language and Information (KSLI), and the Korean
+        Society for EEG and Neurophysiology, where she serves as a director.</p>
+        <p>Her recent research focuses on pragmatic processing in L1 and L2 learners
+        from a neural perspective.</p>
+        <div class="links">
+          <a class="btn solid" href="mailto:yjnam05@hanyang.ac.kr">Email</a>
+          <a class="btn" href="files/cv-yunju-nam.pdf">CV</a>
+          <a class="btn" href="https://www.researchgate.net/profile/Yunju-Nam-5">ResearchGate</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="members">
+    <h2 class="section">Members</h2>
+    <div class="members">
+      <div class="member">
+        <img src="images/member-sumin-cho.jpg" alt="Sumin Jo">
+        <div class="name">Sumin Jo</div>
+        <div class="deg">M.A.</div>
+        <a class="member-email" href="mailto:lovesuminn@hanyang.ac.kr" aria-label="Email Sumin Jo" title="lovesuminn@hanyang.ac.kr">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
+        </a>
+      </div>
+      <div class="member">
+        <img src="images/member-gaun-im.jpg" alt="Gaeun Lim">
+        <div class="name">Gaeun Lim</div>
+        <div class="deg">M.A.Candidate </div>
+        <a class="member-email" href="mailto:eunsuger214@hanyang.ac.kr" aria-label="Email Gaeun Lim" title="eunsuger214@hanyang.ac.kr">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
+        </a>
+      </div>
+      <div class="member">
+        <img src="images/member-jaewon-choi.jpg" alt="Jaewon Choi">
+        <div class="name">Jaewon Choi</div>
+        <div class="deg">M.A.Candidate </div>
+        <a class="member-email" href="mailto:koteacherjw@hanyang.ac.kr" aria-label="Email Jaewon Choi" title="koteacherjw@hanyang.ac.kr">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
+        </a>
+      </div>
+      <div class="member">
+        <img src="images/member-eunjin-chang.jpg" alt="Eunjin Chang">
+        <div class="name">Eunjin Chang</div>
+        <div class="deg">B.A.</div>
+        <a class="member-email" href="mailto:cat8502@hanyang.ac.kr" aria-label="Email Eunjin Chang" title="cat8502@hanyang.ac.kr">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
+        </a>
+      </div>
+      <div class="member">
+        <img src="images/member-ami-gong.jpg" alt="Ami Gong">
+        <div class="name">Ami Gong</div>
+        <div class="deg">Intern</div>
+        <a class="member-email" href="mailto:rhedkal@gmail.com" aria-label="Email Ami Gong" title="rhedkal@gmail.com">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="collaborators">
+    <h2 class="section">Collaborators</h2>
+    <div class="cards">
+      <div class="card">
+        <h3><a href="http://www.hanyang.ac.kr">Hanyang University</a></h3>
+        <p>Seoul Campus · College of Humanities</p>
+      </div>
+      <div class="card">
+        <h3><a href="http://bcrc.konkuk.ac.kr">Brain Cognition Research Center</a></h3>
+        <p>Konkuk University</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="site-inner">
+    <span>© 2026 LBC Lab · Language, Brain &amp; Cognition Laboratory, Hanyang University</span>
+    <span><a href="mailto:yjnam05@hanyang.ac.kr">yjnam05@hanyang.ac.kr</a> · +82-2-2220-0765</span>
+  </div>
+</footer>
+
+</body>
+</html>
