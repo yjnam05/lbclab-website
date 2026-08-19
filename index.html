@@ -29,7 +29,7 @@
 
   <section class="hero">
     <p class="eyebrow">Hanyang University · Seoul</p>
-    <h1>Language is a window <br>showing our <em>mind</em> &amp; <em>brain</em></h1>
+    <h1>Language is a window showing our <em>mind</em> &amp; <em>brain</em></h1>
     <p class="lede">The LBC Lab investigates how the human brain comprehends and produces
     language, using EEG/ERP and eye-movement tracking to observe cognition as it unfolds
     in real time.</p>
@@ -155,44 +155,34 @@
     <h2 class="section">Members</h2>
     <div class="members">
       <div class="member">
+        <img src="images/member-hyenyung-chung.jpg" alt="Hyenyung Chung">
+        <div class="name">Hyenyung Chung</div>
+        <div class="deg">Post-doc Researcher</div>
+      </div>
+      <div class="member">
         <img src="images/member-sumin-cho.jpg" alt="Sumin Jo">
         <div class="name">Sumin Jo</div>
         <div class="deg">M.A.</div>
-        <a class="member-email" href="mailto:lovesuminn@hanyang.ac.kr" aria-label="Email Sumin Jo" title="lovesuminn@hanyang.ac.kr">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
-        </a>
       </div>
       <div class="member">
         <img src="images/member-gaun-im.jpg" alt="Gaeun Lim">
         <div class="name">Gaeun Lim</div>
-        <div class="deg">M.A.Candidate </div>
-        <a class="member-email" href="mailto:eunsuger214@hanyang.ac.kr" aria-label="Email Gaeun Lim" title="eunsuger214@hanyang.ac.kr">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
-        </a>
+        <div class="deg">M.A.</div>
       </div>
       <div class="member">
         <img src="images/member-jaewon-choi.jpg" alt="Jaewon Choi">
         <div class="name">Jaewon Choi</div>
-        <div class="deg">M.A.Candidate </div>
-        <a class="member-email" href="mailto:koteacherjw@hanyang.ac.kr" aria-label="Email Jaewon Choi" title="koteacherjw@hanyang.ac.kr">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
-        </a>
+        <div class="deg">M.A.</div>
       </div>
       <div class="member">
         <img src="images/member-eunjin-chang.jpg" alt="Eunjin Chang">
         <div class="name">Eunjin Chang</div>
-        <div class="deg">B.A.</div>
-        <a class="member-email" href="mailto:cat8502@hanyang.ac.kr" aria-label="Email Eunjin Chang" title="cat8502@hanyang.ac.kr">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
-        </a>
+        <div class="deg">M.A.</div>
       </div>
       <div class="member">
         <img src="images/member-ami-gong.jpg" alt="Ami Gong">
         <div class="name">Ami Gong</div>
         <div class="deg">Intern</div>
-        <a class="member-email" href="mailto:rhedkal@gmail.com" aria-label="Email Ami Gong" title="rhedkal@gmail.com">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
-        </a>
       </div>
     </div>
   </section>
@@ -220,28 +210,5 @@
   </div>
 </footer>
 
-<script>
-(function () {
-  document.querySelectorAll('.member-email').forEach(function (link) {
-    var tip = document.createElement('span');
-    tip.className = 'copy-tip';
-    tip.textContent = '복사됨';
-    link.appendChild(tip);
-
-    link.addEventListener('click', function () {
-      // mailto: navigation proceeds normally — this just also copies the address
-      var email = link.getAttribute('href').replace('mailto:', '');
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(email).catch(function () {});
-      }
-      link.classList.add('copied');
-      clearTimeout(link._copyTimer);
-      link._copyTimer = setTimeout(function () {
-        link.classList.remove('copied');
-      }, 1400);
-    });
-  });
-})();
-</script>
 </body>
 </html>
