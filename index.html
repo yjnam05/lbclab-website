@@ -158,31 +158,55 @@
         <img src="images/member-hyenyung-chung.jpg" alt="Hyenyung Chung">
         <div class="name">Hyenyung Chung</div>
         <div class="deg">Post-doc Researcher</div>
+      <button class="email-btn" data-email="chn4050@naver.com" aria-label="이메일 복사">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5Zm2 0 8 6 8-6"/></svg>
+        <span class="email-tooltip">복사됨</span>
+      </button>
       </div>
       <div class="member">
         <img src="images/member-sumin-cho.jpg" alt="Sumin Jo">
         <div class="name">Sumin Jo</div>
         <div class="deg">M.A.</div>
+      <button class="email-btn" data-email="lovesuminn@hanyang.ac.kr" aria-label="이메일 복사">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5Zm2 0 8 6 8-6"/></svg>
+        <span class="email-tooltip">복사됨</span>
+      </button>
       </div>
       <div class="member">
         <img src="images/member-gaun-im.jpg" alt="Gaeun Lim">
         <div class="name">Gaeun Lim</div>
         <div class="deg">M.A.</div>
+      <button class="email-btn" data-email="eunsuger214@hanyang.ac.kr" aria-label="이메일 복사">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5Zm2 0 8 6 8-6"/></svg>
+        <span class="email-tooltip">복사됨</span>
+      </button>
       </div>
       <div class="member">
         <img src="images/member-jaewon-choi.jpg" alt="Jaewon Choi">
         <div class="name">Jaewon Choi</div>
         <div class="deg">M.A.</div>
+      <button class="email-btn" data-email="koteacherjw@hanyang.ac.kr" aria-label="이메일 복사">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5Zm2 0 8 6 8-6"/></svg>
+        <span class="email-tooltip">복사됨</span>
+      </button>
       </div>
       <div class="member">
         <img src="images/member-eunjin-chang.jpg" alt="Eunjin Chang">
         <div class="name">Eunjin Chang</div>
         <div class="deg">M.A.</div>
+      <button class="email-btn" data-email="cat8502@hanyang.ac.kr" aria-label="이메일 복사">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5Zm2 0 8 6 8-6"/></svg>
+        <span class="email-tooltip">복사됨</span>
+      </button>
       </div>
       <div class="member">
         <img src="images/member-ami-gong.jpg" alt="Ami Gong">
         <div class="name">Ami Gong</div>
         <div class="deg">Intern</div>
+      <button class="email-btn" data-email="rhedkal@gmail.com" aria-label="이메일 복사">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5Zm2 0 8 6 8-6"/></svg>
+        <span class="email-tooltip">복사됨</span>
+      </button>
       </div>
     </div>
   </section>
@@ -210,5 +234,17 @@
   </div>
 </footer>
 
+<script>
+document.querySelectorAll('.email-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var email = btn.getAttribute('data-email');
+    navigator.clipboard.writeText(email).catch(function () {});
+    window.location.href = 'mailto:' + email;
+    var tip = btn.querySelector('.email-tooltip');
+    tip.classList.add('show');
+    setTimeout(function () { tip.classList.remove('show'); }, 1500);
+  });
+});
+</script>
 </body>
 </html>
