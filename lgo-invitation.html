@@ -517,9 +517,6 @@ footer{
   <section id="rsvp">
     <p class="kicker">RSVP</p>
     <h2 class="section-title">참석 여부를 알려주세요</h2>
-    <p class="tally" id="tally">참석 현황 불러오는 중…</p>
-    <button type="button" class="edit-link" id="toggleList" style="margin:0 0 22px;">참석자 명단 보기</button>
-    <div id="guestList" style="display:none; margin-bottom:22px;"></div>
 
     <div class="card" id="codeGate" style="margin-bottom:22px;">
       <div class="field" style="margin-bottom:14px;">
@@ -530,38 +527,16 @@ footer{
       <p class="form-msg" id="codeMsg"></p>
     </div>
 
-    <form id="rsvpForm" style="display:none;">
-      <div class="field">
-        <label for="name">성함</label>
-        <input type="text" id="name" placeholder="예) 남윤주" autocomplete="name" required>
+    <div id="tallyBlock" style="display:none; margin-bottom:18px;">
+      <p class="tally" id="tally"></p>
+      <button type="button" class="edit-link" id="toggleList" style="margin:0;">참석자 명단 보기</button>
+      <div id="guestList" style="display:none; margin-top:14px;"></div>
+    </div>
+
+    <div id="formWrap" style="display:none;">
+      <div style="background:#fff; border-radius:var(--radius); overflow:hidden; max-width:100%;">
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf1jMnU0wJGGwO6_3uUSmhJQRAJFdDDOOsu74Ts74uhUn8CWw/viewform?embedded=true" width="100%" height="1000" frameborder="0" style="display:block;">로드 중…</iframe>
       </div>
-
-      <div class="field">
-        <label>참석 여부</label>
-        <div class="toggle-group">
-          <button type="button" class="toggle-btn" data-kind="yes" id="btnYes">참석합니다</button>
-          <button type="button" class="toggle-btn" data-kind="no" id="btnNo">참석이 어려워요</button>
-        </div>
-      </div>
-
-      <div class="field guest-field" id="guestField">
-        <label for="guests">동반 인원 (본인 제외)</label>
-        <input type="number" id="guests" min="0" max="5" value="0" inputmode="numeric">
-      </div>
-
-      <div class="field">
-        <label for="message">전하고 싶은 말 (선택)</label>
-        <textarea id="message" placeholder="교수님께 전하고 싶은 한마디를 남겨주세요"></textarea>
-      </div>
-
-      <button type="submit" class="submit-btn" id="submitBtn">참석 여부 보내기</button>
-      <p class="form-msg" id="formMsg"></p>
-    </form>
-
-    <div class="confirm" id="confirmBox" style="display:none;">
-      <p class="confirm-mark" id="confirmTitle">감사합니다 🎷</p>
-      <p class="confirm-sub" id="confirmSub">참석 의사가 전달되었습니다.</p>
-      <button class="edit-link" id="editLink">내용을 다시 입력할게요</button>
     </div>
   </section>
 
@@ -571,27 +546,30 @@ footer{
 
 <script>
 (function(){
-  const btnYes = document.getElementById('btnYes');
-  const btnNo = document.getElementById('btnNo');
-  const guestField = document.getElementById('guestField');
-  const form = document.getElementById('rsvpForm');
-  const formMsg = document.getElementById('formMsg');
-  const submitBtn = document.getElementById('submitBtn');
-  const confirmBox = document.getElementById('confirmBox');
-  const confirmTitle = document.getElementById('confirmTitle');
-  const confirmSub = document.getElementById('confirmSub');
-  const editLink = document.getElementById('editLink');
+  // Once the response sheet is published to the web as CSV, paste that link here
+  // (Google Sheet > File > Share > Publish to web > CSV) to turn on live tally + guest list.
+  const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaJ-3Hi6wPP62Tgn5KXw7E14Nd9VfnevmN4BaXIMfEinmnEW1LZeqk9Sjf0BfVIaVhRAiloxhpfHSI/pub?gid=1083225252&single=true&output=csv';
+
   const INVITE_CODE = 'BASE2026';
   const codeGate = document.getElementById('codeGate');
   const codeInput = document.getElementById('inviteCode');
   const codeSubmitBtn = document.getElementById('codeSubmitBtn');
   const codeMsg = document.getElementById('codeMsg');
+  const formWrap = document.getElementById('formWrap');
+  const tallyBlock = document.getElementById('tallyBlock');
+  const tallyEl = document.getElementById('tally');
+  const toggleListBtn = document.getElementById('toggleList');
+  const guestListEl = document.getElementById('guestList');
 
   function checkCode(){
     const entered = codeInput.value.trim().toUpperCase().replace(/\s+/g,'');
     if(entered === INVITE_CODE){
       codeGate.style.display = 'none';
-      form.style.display = 'block';
+      formWrap.style.display = 'block';
+      if(CSV_URL){
+        tallyBlock.style.display = 'block';
+        refreshTally();
+      }
     }else{
       codeMsg.textContent = '코드가 일치하지 않습니다. 초청 이메일을 다시 확인해 주세요.';
       codeMsg.dataset.tone = 'error';
@@ -602,26 +580,46 @@ footer{
     if(e.key === 'Enter'){ e.preventDefault(); checkCode(); }
   });
 
-  const tallyEl = document.getElementById('tally');
-  const toggleListBtn = document.getElementById('toggleList');
-  const guestListEl = document.getElementById('guestList');
-  let listVisible = false;
-
-  async function fetchAllRsvps(){
-    const listResult = await window.storage.list('rsvp:', true);
-    const entries = [];
-    if(listResult && listResult.keys){
-      for(const key of listResult.keys){
-        try{
-          const res = await window.storage.get(key, true);
-          if(res && res.value){
-            entries.push(JSON.parse(res.value));
-          }
-        }catch(e){ /* skip unreadable entry */ }
+  // --- Simple CSV parser (handles quoted fields with commas) ---
+  function parseCSV(text){
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    for(let i = 0; i < text.length; i++){
+      const c = text[i];
+      if(inQuotes){
+        if(c === '"'){
+          if(text[i+1] === '"'){ field += '"'; i++; } else { inQuotes = false; }
+        } else { field += c; }
+      } else {
+        if(c === '"'){ inQuotes = true; }
+        else if(c === ','){ row.push(field); field = ''; }
+        else if(c === '\n'){ row.push(field); rows.push(row); row = []; field = ''; }
+        else if(c === '\r'){ /* skip */ }
+        else { field += c; }
       }
     }
-    entries.sort((a,b) => (a.submittedAt || '').localeCompare(b.submittedAt || ''));
-    return entries;
+    if(field.length || row.length){ row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  async function fetchResponses(){
+    const res = await fetch(CSV_URL, { cache: 'no-store' });
+    if(!res.ok) throw new Error('CSV fetch failed');
+    const text = await res.text();
+    const rows = parseCSV(text).filter(r => r.length > 1);
+    const header = rows.shift() || [];
+    const idx = {
+      name: header.findIndex(h => h.includes('성함')),
+      attending: header.findIndex(h => h.includes('참석')),
+      guests: header.findIndex(h => h.includes('동반')),
+      message: header.findIndex(h => h.includes('말'))
+    };
+    return rows.map(r => ({
+      name: (r[idx.name] || '').trim(),
+      attending: (r[idx.attending] || '').includes('참석') && !(r[idx.attending] || '').includes('불참') ? 'yes' : 'no',
+      guests: parseInt(r[idx.guests], 10) || 0,
+      message: (r[idx.message] || '').trim()
+    })).filter(e => e.name);
   }
 
   function renderGuestList(entries){
@@ -640,6 +638,7 @@ footer{
     }).join('');
   }
 
+  let listVisible = false;
   toggleListBtn.addEventListener('click', async () => {
     listVisible = !listVisible;
     if(listVisible){
@@ -647,8 +646,7 @@ footer{
       guestListEl.style.display = 'block';
       guestListEl.innerHTML = '<p class="guest-empty">불러오는 중…</p>';
       try{
-        const entries = await fetchAllRsvps();
-        renderGuestList(entries);
+        renderGuestList(await fetchResponses());
       }catch(e){
         guestListEl.innerHTML = '<p class="guest-empty">명단을 불러오지 못했습니다.</p>';
       }
@@ -658,104 +656,21 @@ footer{
     }
   });
 
-  let attending = null;
-
-  function setAttending(val){
-    attending = val;
-    btnYes.dataset.active = (val === 'yes') ? 'true' : 'false';
-    btnNo.dataset.active = (val === 'no') ? 'true' : 'false';
-    guestField.dataset.show = (val === 'yes') ? 'true' : 'false';
-  }
-
-  btnYes.addEventListener('click', () => setAttending('yes'));
-  btnNo.addEventListener('click', () => setAttending('no'));
-
-  function slugify(str){
-    return str.trim().toLowerCase().replace(/\s+/g,'-').replace(/[^\w\-가-힣]/g,'');
-  }
-
-  function setMsg(text, tone){
-    formMsg.textContent = text || '';
-    if(tone) formMsg.dataset.tone = tone; else formMsg.removeAttribute('data-tone');
-  }
-
   async function refreshTally(){
     tallyEl.textContent = '참석 현황 불러오는 중…';
     try{
-      const entries = await fetchAllRsvps();
+      const entries = await fetchResponses();
       if(entries.length === 0){
         tallyEl.textContent = '아직 접수된 참석 응답이 없습니다.';
         return;
       }
       let headcount = 0;
-      entries.forEach(function(e){
-        if(e.attending === 'yes'){
-          headcount += 1 + (parseInt(e.guests,10) || 0);
-        }
-      });
+      entries.forEach(e => { if(e.attending === 'yes'){ headcount += 1 + e.guests; } });
       tallyEl.textContent = entries.length + '명이 응답, 현재 ' + headcount + '명 참석 예정입니다.';
     }catch(e){
       tallyEl.textContent = '';
     }
   }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const nameVal = document.getElementById('name').value.trim();
-    if(!nameVal){
-      setMsg('성함을 입력해 주세요.', 'error');
-      return;
-    }
-    if(attending === null){
-      setMsg('참석 여부를 선택해 주세요.', 'error');
-      return;
-    }
-    const guestsVal = attending === 'yes' ? (parseInt(document.getElementById('guests').value,10) || 0) : 0;
-    const messageVal = document.getElementById('message').value.trim();
-
-    submitBtn.disabled = true;
-    setMsg('전송 중…', null);
-
-    const payload = {
-      name: nameVal,
-      attending: attending,
-      guests: guestsVal,
-      message: messageVal,
-      submittedAt: new Date().toISOString()
-    };
-
-    try{
-      const key = 'rsvp:' + slugify(nameVal);
-      const result = await window.storage.set(key, JSON.stringify(payload), true);
-      if(!result){
-        setMsg('전송에 실패했습니다. 다시 시도해 주세요.', 'error');
-        submitBtn.disabled = false;
-        return;
-      }
-      form.style.display = 'none';
-      confirmBox.style.display = 'block';
-      if(attending === 'yes'){
-        confirmTitle.textContent = '참석해 주셔서 감사합니다 🎷';
-        confirmSub.textContent = nameVal + '님 외 ' + guestsVal + '분, 자리에서 뵙겠습니다.';
-      }else{
-        confirmTitle.textContent = '아쉽지만 다음에 뵈어요';
-        confirmSub.textContent = '마음 전해주셔서 감사합니다.';
-      }
-      refreshTally();
-    }catch(err){
-      setMsg('전송 중 문제가 발생했습니다. 다시 시도해 주세요.', 'error');
-      submitBtn.disabled = false;
-    }
-  });
-
-  editLink.addEventListener('click', () => {
-    confirmBox.style.display = 'none';
-    form.style.display = 'block';
-    submitBtn.disabled = false;
-    setMsg('', null);
-  });
-
-  refreshTally();
 })();
 </script>
 
