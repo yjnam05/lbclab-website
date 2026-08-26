@@ -453,10 +453,6 @@ footer{
         <div class="detail-label">장소</div>
         <div class="detail-value">재즈 까페 '마미 블루'<span class="sub"><a href="https://naver.me/5wWgwBhB" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline;">네이버 지도에서 길찾기 →</a></span></div>
       </div>
-      <div class="detail-row">
-        <div class="detail-label">주인공</div>
-        <div class="detail-value">베이스 — 홍우평 교수님</div>
-      </div>
     </div>
   </section>
 
@@ -525,7 +521,16 @@ footer{
     <button type="button" class="edit-link" id="toggleList" style="margin:0 0 22px;">참석자 명단 보기</button>
     <div id="guestList" style="display:none; margin-bottom:22px;"></div>
 
-    <form id="rsvpForm">
+    <div class="card" id="codeGate" style="margin-bottom:22px;">
+      <div class="field" style="margin-bottom:14px;">
+        <label for="inviteCode">초청 코드</label>
+        <input type="text" id="inviteCode" placeholder="초청 이메일에 안내된 코드를 입력해 주세요" autocomplete="off">
+      </div>
+      <button type="button" class="submit-btn" id="codeSubmitBtn" style="background:var(--panel-2); color:var(--ivory); border:1px solid var(--line);">확인</button>
+      <p class="form-msg" id="codeMsg"></p>
+    </div>
+
+    <form id="rsvpForm" style="display:none;">
       <div class="field">
         <label for="name">성함</label>
         <input type="text" id="name" placeholder="예) 남윤주" autocomplete="name" required>
@@ -576,6 +581,27 @@ footer{
   const confirmTitle = document.getElementById('confirmTitle');
   const confirmSub = document.getElementById('confirmSub');
   const editLink = document.getElementById('editLink');
+  const INVITE_CODE = 'MAMIBLUE2026';
+  const codeGate = document.getElementById('codeGate');
+  const codeInput = document.getElementById('inviteCode');
+  const codeSubmitBtn = document.getElementById('codeSubmitBtn');
+  const codeMsg = document.getElementById('codeMsg');
+
+  function checkCode(){
+    const entered = codeInput.value.trim().toUpperCase().replace(/\s+/g,'');
+    if(entered === INVITE_CODE){
+      codeGate.style.display = 'none';
+      form.style.display = 'block';
+    }else{
+      codeMsg.textContent = '코드가 일치하지 않습니다. 초청 이메일을 다시 확인해 주세요.';
+      codeMsg.dataset.tone = 'error';
+    }
+  }
+  codeSubmitBtn.addEventListener('click', checkCode);
+  codeInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){ e.preventDefault(); checkCode(); }
+  });
+
   const tallyEl = document.getElementById('tally');
   const toggleListBtn = document.getElementById('toggleList');
   const guestListEl = document.getElementById('guestList');
